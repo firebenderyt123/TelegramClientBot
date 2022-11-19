@@ -4,7 +4,7 @@ from telethon import events
 from config import *
 import asyncio
 from asyncio import sleep
-from random import randrange
+from random import randint, getrandbits
 import emoji
 
 client = TelegramClient('Session', api_id, api_hash)
@@ -22,22 +22,22 @@ emoji_mixes = {
 		['🤍', '💛']  # white gold
 	],
 	'thx_mix': [
-		['◽️', '🥰'],
-		['◽️', '☺️'],
-		['◽️', '😘'],
-		['◽️', '😍'],
-		['◽️', '😊'],
-		['◽️', '❤️‍🔥']
+		['ᅠ   ', '🥰'],
+		['ᅠ   ', '☺️'],
+		['ᅠ   ', '😘'],
+		['ᅠ   ', '😍'],
+		['ᅠ   ', '😊'],
+		['ᅠ   ', '❤️‍🔥']
 	],
 	'moon_mix': list('🌑🌘🌗🌖🌕🌝🌕🌔🌓🌒🌑🌚')
 }
 
 help_message = '''
 1. .text - print text
-2. /love - love mask
-3. /thx - thanks mask
-4. /fuck - draw xep
-5. /moon - moon animations
+2. `/love` - love mask
+3. `/thx` - thanks mask
+4. `/dick` - draw dick
+5. `/moon` - moon animations
 '''
 
 heart_mask = '''
@@ -52,8 +52,19 @@ heart_mask = '''
 000000000
 '''.strip().split('\n')
 
+# heart_mask = '''
+# 00   11011
+# 0   111111
+# 0   111111
+# 00   11111
+# 000  1111
+# 0000  111
+# 00000  11
+# 000000 1
+# '''.strip().split('\n')
+
 xyz = '''
-\\\\\\♥️♥️
+ᅠ♥️♥️
 ♥️♥️♥️
  ♥️♥️♥️
       ❤️❤️❤️
@@ -67,6 +78,18 @@ xyz = '''
 ❤️❤️❤️❤️❤️❤️❤️
 ❤️❤️❤️     ❤️❤️❤️
       ❤️❤️      ❤️❤️
+'''
+
+snow = '''
+☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️
+00000000000
+00000000000
+00000000000
+00000000000
+00000000000
+00000000000
+00000000000
+⛄️☃️⛄️☃️⛄️☃️⛄️☃️⛄️☃️⛄️
 '''
 
 async def mask_printer(event, mix_arr):
@@ -95,7 +118,7 @@ async def mask2_printer(event, mix_arr):
 		text_send = ''
 		for line in heart_mask:
 			for sign in line:
-				i = randrange(0, mix_arr_len-1, 1)
+				i = randint(0, mix_arr_len-1)
 				if sign == '0':
 					text_send += sign.replace('0', mix_arr[i][0])
 				else:
@@ -108,7 +131,6 @@ async def mask2_printer(event, mix_arr):
 
 @client.on(events.NewMessage(outgoing=True))
 async def handler(event):
-
 	if event.text.startswith('/love'): # /love any text
 		text = event.text[len('/love'):]
 		mix_arr = emoji_mixes['heart_mix']
@@ -127,7 +149,7 @@ async def handler(event):
 		if text.strip() != '':
 			await client.edit_message(event.message, text)
 		else:
-			i = randrange(0, len(mix_arr)-1, 1)
+			i = randint(0, len(mix_arr)-1)
 			text_send = ''
 			for line in heart_mask:
 				text_send += line.replace('0', mix_arr[i][0]).replace('1', mix_arr[i][1]) + '\n'
@@ -140,8 +162,42 @@ async def handler(event):
 			await client.edit_message(event.message, sign)
 			await sleep(moon_delay)
 
-	elif event.text.startswith('/fuck'): # /moon
+	elif event.text.startswith('/dick'): # /moon
 		await client.edit_message(event.message, xyz)
+
+	elif event.text.startswith('/snow'): # /moon
+		text = event.text[len('/snow'):]
+		splitted = snow.split('\n')[1:-1]
+		msg = snow.replace('0', 'ᅠ')
+		await client.edit_message(event.message, msg)
+		await sleep(mask_delay)
+
+		addon = False
+		sn_len = len(splitted[1])
+		sn_height = len(splitted)
+		# add snows
+		for n in range(1, sn_height-1):
+			last_msg = msg.split('\n')
+			msg = splitted[0] + '\n'
+			for l in last_msg[1:n+1]:
+				for i in range(sn_len):
+					val = bool(getrandbits(1))
+					if val == 0:
+						msg += 'ᅠ  '
+						if not addon:
+							msg += ' '
+							addon = True
+						else:
+							addon = False
+					else:
+						msg += '❄️'
+				msg += '\n'
+			if n < sn_height-2:
+				msg += 'ᅠ' * sn_len + '\n' * (sn_height - 2 - n)
+			msg += splitted[-1]
+			await client.edit_message(event.message, msg)
+			await sleep(mask_delay)
+
 
 	elif event.text.startswith('.'): # .hello world
 		text = event.text[len('.'):]
