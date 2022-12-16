@@ -38,8 +38,9 @@ help_message = '''
 2. `/love` - love mask
 3. `/thx` - thanks mask
 4. `/dick` - draw dick
-5. `/moon` - moon animations
-6. `/snow` - snow animation
+5. `/pussy` - draw pussy
+6. `/moon` - moon animations
+7. `/snow` - snow animation
 '''
 
 heart_mask = '''
@@ -74,6 +75,20 @@ xyz = '''
         ❤️❤️❤️❤️❤️❤️❤️
         ❤️❤️❤️     ❤️❤️❤️
               ❤️❤️      ❤️❤️
+'''
+
+pussy = '''
+ᅠ
+        💋
+    💋    💋
+    💋       💋
+💋   💋    💋
+💋   💋    💋
+💋   💋    💋
+💋   💋    💋
+   💋  💋  💋
+     💋  💋
+        💋
 '''
 
 snow = '''
@@ -141,11 +156,14 @@ async def dick_anim(event, mix_arr, inp_text=''):
             text = text.replace(str(j), '       ')
         await client.edit_message(event.message, text)
         await sleep(mask_delay)
-    text = xyz
+    text = 'В тебя запустили Волшебным хуем! ✨'
+    text += xyz
     for i in range(total_nums):
         text = text.replace(str(i), mix_arr[0])
     if inp_text != '':
-        text += f'\n\n{inp_text}'
+        text += f'\n{inp_text}'
+    else:
+        text += '\n☃️ Бросай хуй в тех, кого не хочешь потерять в 2022 году ⛄️'
     await client.edit_message(event.message, text)
 
 
@@ -183,13 +201,19 @@ async def handler(event):
             await client.edit_message(event.message, sign)
             await sleep(moon_delay)
 
-    elif event.text.startswith('/dick'):  # /moon
+    elif event.text.startswith('/dick'):  # /dick
         text = event.text[len('/dick'):]
         mix_arr = emoji_mixes['dick_mix']
         await dick_anim(event, mix_arr, text.strip())
         # await client.edit_message(event.message, xyz)
 
-    elif event.text.startswith('/snow'):  # /moon
+    elif event.text.startswith('/pussy'):  # /pussy
+        text = 'В вас запустили Волшебной пиздой! ✨'
+        text += pussy
+        text += '\n⛄️ Запиздячь ею тех, кого не хочешь потерять в 2022 ⛄️'
+        await client.edit_message(event.message, text)
+
+    elif event.text.startswith('/snow'):  # /snow
         text = event.text[len('/snow'):]
         splitted = snow.split('\n')[1:-1]
         msg = snow.replace('0', 'ᅠ')
